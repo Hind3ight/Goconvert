@@ -2,6 +2,7 @@ package fileUtils
 
 import (
 	"github.com/hind3ight/Goconvert/consts"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -68,4 +69,36 @@ func AddSepIfNeeded(pth string) string {
 		pth += consts.PthSep
 	}
 	return pth
+}
+
+func MkDirIfNeeded(dir string) error {
+	if !FileExist(dir) {
+		err := os.MkdirAll(dir, os.ModePerm)
+		return err
+	}
+
+	return nil
+}
+
+func FileExist(path string) bool {
+	var exist = true
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		exist = false
+	}
+	return exist
+}
+
+func WriteFile(filePath string, content string) {
+	dir := filepath.Dir(filePath)
+	MkDirIfNeeded(dir)
+
+	var d1 = []byte(content)
+	err2 := ioutil.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
+	check(err2)
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

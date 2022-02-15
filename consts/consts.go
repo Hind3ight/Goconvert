@@ -3,5 +3,6 @@ package consts
 import "os"
 
 var (
-	PthSep = string(os.PathSeparator)
+	PthSep            = string(os.PathSeparator)
+	DefaultOutPutFile = "OutPut.yaml"
 )

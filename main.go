@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	oldPath string
-	flagSet *flag.FlagSet
+	oldPath    string
+	flagSet    *flag.FlagSet
+	outPutPath string
 )
 
 func main() {
@@ -27,7 +28,9 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("go-convert", flag.ContinueOnError)
+	flagSet.StringVar(&outPutPath, "o", "", "")
 	files := fileUtils.GetFilesFromParams(os.Args[2:])
+	flagSet.Parse(os.Args[len(files)+2:])
 
 	ret, err := ioutil.ReadFile(files[0])
 	y, err := yaml.JSONToYAML(ret)
@@ -35,7 +38,10 @@ func main() {
 		fmt.Printf("err: %v\n", err)
 		return
 	}
-	fmt.Println(string(y))
+
+	// create file
+	resultDir := consts.WorkDir + outPutPath + consts.PthSep + consts.DefaultOutPutFile
+	fileUtils.WriteFile(resultDir, string(y))
 
 	j2, err := yaml.YAMLToJSON(y)
 	if err != nil {
